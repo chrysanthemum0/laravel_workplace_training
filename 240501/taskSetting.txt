@@ -1,0 +1,107 @@
+* laravel 신규 어플리케이션 / 워크스페이스 설정
+- 원하는 경로 폴더 생성 예. cd dektop mkdir laravel *터미널(shell)에서 작업
+- cd laravel
+- composer create-project laravel/laravel 작업폴더명 "9.*" --prefer-dist
+- cd 작업폴더명 
+- php artisan serve --> 로 작업 폴더 기동 가능 
+
+
+*DB만들기
+1.xampp/mysql/bin
+2.mysql -u root -p
+3.CREATE DATABASE DB명
+4.show databases; ->로 db들어갔는지 확인 
+
+*DB의 접속설정
+1..env 파일 찾아서 
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=DB명 ---> 여기 바꾸기 
+DB_USERNAME=유저명 ---> 여기 바꾸기
+DB_PASSWORD=유저 패스워드 ---> 여기 바꾸기
+
+*모델 Model M
+라라벨 규약에서 테이블 이름은 books처럼 복수형으로 모델(클래스)은 Book으로 
+제일 앞글자 대문자로 표현
+
+*Artisan 커맨드 
+php artisan make:model 모델명 -> 모델의 작성 artisan의 make:model의 커맨드를 사용해 모델작성
+app/Modles/모델명.php --> 의 경로에서 확인가능 
+
+*테이블 작성 / 마이그레이션
+1.php artisan make:migration create_테이블명s붙이기_table --create=테이블명s 붙이기 
+2.database/migrations/yy_mm_dd_hh_create_테이블명s_table.php 가서 확인
+3. Schema::create('테이블명', funtion (Blueprint $table){
+    $table->id();
+  ----------> 여기에 테이블에 삽입할 컬럼 작성 참고 39p
+    $table->string('title');
+    $table->string('name'); //animal name
+    $table->string('description'); //animals info
+    $table->string('image');
+    $table->timestamps();
+});
+
+4. 컬럼 설정 끝나면 터미널에서 php artisan migrate 실행
+5. DB패널(커맨트)가서 잘 들어갔나 확인 -> DESC DB명.테이블명; 
+6. php artisan tinker 로 모델 조작 가능 41p 참고! 이걸로 데이터 삽입, 변경 가능 
+7. 근데 그냥 sql터미널에서 직접 삽입하는게 편하더라...
+
+*컨트롤러 Controller C
+1. php artisan make:controller 모델명Controller --resource
+2. app/HTTP/Controllers/모델명Controller.php --> 에서 잘 만들어졌는지 확인 가능
+
+*루팅, Routes !!중요하니깐 47p~49p 참고  
+1. routes/web.php -->에서 조작
+2. Route::HTTP메소드(URL, 처리)
+3. 라라벨에서 브라우저를 통한 웹 접근용 라우트는 routes/web.php 파일에 정의.웹 접근용 라우트는 사용자가 방문하는 URL.
+4. use App\Http\Controllers\AnimalController;
+Route::get('/', [AnimalController::class, 'index']); -->index가 보여줄 페이지
+Route::get('/animals/{id}', [AnimalController::class, 'show'])
+
+
+여기부터는 작업 시 대충 이런 느낌으로 
+
+5.하고 나면 탑 페이지 처리 --> 경로 app/Http/Controllers/파일명Controller.php
+  public function index()
+    {
+        //animal테이블에서 전체정보 배열로 취득 
+        $animals = \App\Models\Animal::all();
+        return view('index', ['animals' => $animals]);
+    }
+
+        public function show($name)
+    {
+        //
+        $animal = \App\Models\Animal::find($name);
+        return view('show', ['animal' => $animal]);
+    }
+
+* 뷰 View V
+컨트롤러 완성 후 URL에 응해 적절한 HTML페이지를 화면에 표시하는 작업 
+
+1. 뷰의 작성 경로 resources/views/ --> 에다가 파일명.blade.php 로 작성 
+2. blade에서는 HTML의 기술을 베이스로도 하면서 독립적으로 구문에 따라 프로그램 코드를 넣어 
+PHP변수나 제어문등을 사용할 수 있음.
+
+3. 예시인데 laravel 책 51p - 56p까지 참고
+
+예)index.blade.php
+<body>
+    <h1>動物一覧</h1>
+    @foreach ($animals as $animal)
+    <p><a href="/animals/{{ $animal->id }}">{{$animal->name}}</a></p>
+    @endforeach
+</body>
+</html>
+
+예)show.blade.php
+<body>
+    <h1>動物詳細</h1>
+    <h2>{{ $animal->name }}</h2>
+    <p>説明 : {{ $animal->description }}</p>
+    <p>画像ファイル名 : {{ $animal->image }}</p>
+    <p><img src="/images/corgi.png" width="200" height="200"></p>
+    <a href="/">戻る</a>
+</body>
+</html>

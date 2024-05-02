@@ -1,0 +1,65 @@
+########################################################
+
+    <link rel="stylesheet" href="public/css/main.css">
+    <link rel="stylesheet" href="/css/main.css">
+
+##################웹 어플리케이션의 작성##################
+
+*인증 패키지 Fortify
+로그인 인증기능 제공하는 강력한 패키지
+1. 이름, 메일주소, 패스워드로 회원등록
+2. 메일주소와 패스워드로 로그인
+3. 로그아웃 가능
+4. 패스워드 재설정은 불가능
+5. 메일 인증 불가능
+6. 회원정보 변경 불가능
+7. 탈퇴 계정의 삭제는 안해도 된다..?
+
+* DB 1:1, 1:N, N:N
+1:N - 
+일대다(1:N) 관계는 하나의 레코드가 서로 다른 여러 개의 레코드와 연결된 경우이다.
+User 테이블과 Phonebook 테이블의 관계를 다음과 같이 나타낸다고 가정한다.
+해당 구조에는 한 명의 사용자는 여러 개의 전화번호를 가질 수 있으나, 여러 명의 유저가 하나의 전화번호를 가질 수는 없는 구조이다.
+일반적으로 데이터베이스를 사용할 때 가장 많이 사용되는 관계이다.
+
+
+N:N - 
+다대다(N:M) 관계는 여러 개의 레코드가 다른 테이블의 여러 개의 레코드와 관계가 있는 경우이다.
+N:M 관계를 위해 스키마를 디자인할 때에는 Join 테이블을 만들어 관리한다.
+1:N 관계와 비슷하지만, 양방향에서 다수의 레코드를 가질 수 있다.
+
+*Fortify 사용방법 
+composer require laravel/fortify -> 패키지 인스톨
+
+php artisan vendor:publish --provider="Laravel\Fortify\FortifyServiceProvider" -> 패키지 관련 파일들 쓰기 좋은 곳에 넣어줌
+
+ config/app.php -> 경로에 추가 196행 
+App\Providers\FortifyServiceProvider::class,
+
+app/Providers/FortifyServiceProvider.php -> 경로에 추가 46행
+       Fortify::loginView(function () {
+           return view('auth.login');
+        });
+
+        Fortify::registerView(function () {
+           return view('auth.register');
+        });
+
+*config()함수 
+config 함수는 설정 변수의 값을 가져옵니다. 
+설정 값은 파일명과 접근하고자 하는 옵션을 포함하는 "점(.)" 문법(syntax)를 사용하여 접근할 수 있습니다. 
+설정 옵션이 존재하지 않는다면 지정된 기본값이 반환됩니다.
+여기서 env()함수와 자주 같이 쓰여짐 
+
+*old()함수
+old 함수는 세션에 저장된 이전 입력값(flashed)을 조회합니다. $value = old('value');
+ld 함수 에 대한 두 번째 인수로 제공되는 "기본값" 은 종종 Eloquent 모델의 속성이기 때문에
+전체 Eloquent 모델을 old 함수에 대한 두 번째 인수로 간단히 전달할 수 있습니다.
+그렇게 할 때, 라라벨은 old 함수에 제공된 
+첫 번째 인수가 "기본값"으로 간주되어야 하는 Eloquent 속성의 이름이라고 가정합니다:
+
+*CSRF
+라라벨은 크로스-사이트 요청 위조 공격 (CSRF)으로부터 애플리케이션을 손쉽게 보호할 수 있도록 해줍니다. 
+사이트 간 요청 위조는 인증된 사용자를 대신해서 승인되지 않은 커맨드를 악의적으로 활용하는 것입니다.
+
+* !!로그인 기능 구현과 패키지 관련해서는 꼭 복습할 것 laravel책 82p - 102p 

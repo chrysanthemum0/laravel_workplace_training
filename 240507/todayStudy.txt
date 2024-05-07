@@ -1,0 +1,54 @@
+########################################################
+
+*$fillable 
+
+- 대량할당 될 수 있는 속성들 
+
+- 모델의 $fillable 배열에 입력이 가능한 컬럼을 명시적으로 지정 
+
+- 지정된 칼럼외에는 배열에 값이 있어도 무시
+
+ 
+
+*$guarded 
+
+- 대량할당이 안되는 속성들(여기에 포함이 안된 배열들은 대량할당이 가능)
+
+- description 항목을 보호하는 설정 
+
+- 배열에 있는 해당 값은 DB에 반영되지 않는다. 
+
+
+사용하는 이유 
+
+- 애플리케이션의 보안을 위해 사용한다.
+
+- 사용자가 악의적인 배열을 전송시, 막지 않으면 그대로 입력이 되어버린다 
+
+- 이러한 사항을 막기 위해 얼로퀀트는 모델에 배열을 직접 전달하여 DB변경시 개발자가 명시적으로 입력이 가능한 컬럼을 전달해야한다.
+
+*1대다릴레이션 
+
+-hasMany() //app/Models/User.php
+유저와 복수의 관계를 갖기 때문에 이 메소드를 사용하여야 함 제1 인수는 관계상대를 나타냄 
+ex.    public function messages(){
+        return $this->hasMany(Message::class);
+    }
+
+-belongsTo() //app/Models/Message.php
+반면 관계가 있는 한명의 유저에는 반드시 속하는 것이 되기 때문에 이 메소드를 사용해야함
+ex.     public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+유저와 메세지의 일대다의 관계의 정의 방법 참고 *laravel 106p
+
+**복습 
+HTTP method / URL / Action / 설명 
+1. GET / books / index / Book의 일람 화면 표시
+2. GET / books/create / create / Book의 신규작성의 화면 표시
+3. POST / books / store / Book의 신규등록
+4. GET / books/{id} / show / {id}의 Book의 상세화면의 표시
+5. GET / books{id}/edit / edit / {id}의 Book의 편집화면 표시
+6. PUT / books{id} / update / {id}의 Book의 갱신
+7. DELETE / books{id} / destroy / {id}의 Book의 삭제
